@@ -33,6 +33,7 @@ function affichageProjets(Projets) {
     return [];
   }
 }
+// fonction pour bouton filtres
 function CreationBoutonTri() {
   try {
     const divPortfolio = document.querySelector(".DivFiltres");
@@ -68,6 +69,38 @@ function CreationBoutonTri() {
     return [];
   }
 }
-//appel de la balise asynchrone
+//fonction pour connection et deconnection
+function login() {
+  try {
+    const token = window.localStorage.getItem("token");
+    const divPortfolio = document.querySelector(".DivFiltres");
+    const login = document.getElementById("logout");
+
+    if (token) {
+      login.innerText = "Logout";
+      const logoH2 = document.createElement("i");
+      logoH2.classList = "fa-regular fa-pen-to-square";
+      const modalText = document.createElement("p");
+      modalText.innerText = "modifier";
+      const titleH2 = document.querySelector(".titleH2");
+      titleH2.appendChild(logoH2);
+      titleH2.appendChild(modalText);
+      login.addEventListener("click", () => {
+        window.localStorage.removeItem("token");
+        login.href = "index.html";
+      });
+    } else {
+      //si il y a pas de token enregistrer crée les boutons filtres
+      CreationBoutonTri();
+      login.addEventListener("click", () => {
+        login.href = "login.html";
+      });
+    }
+  } catch (error) {
+    console.error(`Erreur: ${error}`);
+    return [];
+  }
+}
+
+login();
 affichageProjets(Projets);
-CreationBoutonTri();

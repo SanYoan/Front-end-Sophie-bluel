@@ -10,7 +10,6 @@ formulaireConnect.addEventListener("submit", async (event) => {
       body: JSON.stringify({ email: email, password: password }),
     });
     const data = await response.json();
-    console.log(response);
     const token = data.token;
 
     if (response.status < 400) {

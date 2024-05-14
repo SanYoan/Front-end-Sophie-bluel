@@ -126,6 +126,17 @@ li:hover {
 	margin-bottom: 1em;
 }
 
+.titleH2 {
+	display: flex;
+	justify-content: center;
+	align-items: first baseline;
+	gap: 10px;
+}
+
+.titleH2 i {
+	margin-left: 20px;
+}
+
 #introduction p {
 	margin-bottom: 0.5em;
 }

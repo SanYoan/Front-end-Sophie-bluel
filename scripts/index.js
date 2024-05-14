@@ -33,6 +33,41 @@ function affichageProjets(Projets) {
     return [];
   }
 }
+// modal
+let modal = null;
+// Permet d'ouvrir la modal
+function Modal() {
+  try {
+    const openModal = function (event) {
+      event.preventDefault();
+      const target = document.querySelector(event.target.getAttribute("href"));
+      target.style.display = null;
+      target.removeAttribute("aria-hidden");
+      target.setAttribute("aria-modal", "true");
+      modal = target;
+      modal.addEventListener("click", closeModal);
+      modal.querySelector(".fa-solid.fa-xmark").addEventListener("click", closeModal);
+    };
+    // For close modal with the cross
+    const closeModal = function (e) {
+      if (modal === null) return;
+      e.preventDefault();
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+      modal.removeAttribute("aria-modal");
+      modal.removeEventListener("click", closeModal);
+      modal
+        .querySelector(".fa-solid.fa-xmark")
+        .removeEventListener("click", closeModal);
+      modal = null;
+    };
+
+    document.querySelector(".js-modal").addEventListener("click", openModal);
+  } catch (error) {
+    console.error(`Erreur: ${error}`);
+    return [];
+  }
+}
 // fonction pour bouton filtres
 function CreationBoutonTri() {
   try {
@@ -80,10 +115,13 @@ function login() {
       login.innerText = "Logout";
       const logoH2 = document.createElement("i");
       logoH2.classList = "fa-regular fa-pen-to-square";
-      const modalText = document.createElement("p");
+      //création du texte modifier et logo
+      const modalText = document.createElement("a");
+      modalText.href = "#modal1";
       modalText.innerText = "modifier";
+      modalText.classList = "js-modal";
       const titleH2 = document.querySelector(".titleH2");
-      titleH2.appendChild(logoH2);
+      modalText.insertBefore(logoH2, modalText.firstChild);
       titleH2.appendChild(modalText);
       login.addEventListener("click", () => {
         window.localStorage.removeItem("token");
@@ -104,3 +142,4 @@ function login() {
 
 login();
 affichageProjets(Projets);
+Modal();

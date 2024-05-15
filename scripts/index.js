@@ -38,6 +38,12 @@ let modal = null;
 // Permet d'ouvrir la modal
 function Modal() {
   try {
+    // Fonction pour arrêter la propagation de l'événement
+    const stopPropagation = function (e) {
+      e.stopPropagation();
+    };
+
+    // Fonction pour ouvrir la modal
     const openModal = function (event) {
       event.preventDefault();
       const target = document.querySelector(event.target.getAttribute("href"));
@@ -47,8 +53,10 @@ function Modal() {
       modal = target;
       modal.addEventListener("click", closeModal);
       modal.querySelector(".fa-solid.fa-xmark").addEventListener("click", closeModal);
+      modal.querySelector(".js-modal-stop").addEventListener("click", stopPropagation);
     };
-    // For close modal with the cross
+
+    // Fonction pour fermer la modal
     const closeModal = function (e) {
       if (modal === null) return;
       e.preventDefault();
@@ -56,18 +64,63 @@ function Modal() {
       modal.setAttribute("aria-hidden", "true");
       modal.removeAttribute("aria-modal");
       modal.removeEventListener("click", closeModal);
-      modal
-        .querySelector(".fa-solid.fa-xmark")
-        .removeEventListener("click", closeModal);
+      modal.querySelector(".fa-solid.fa-xmark").removeEventListener("click", closeModal);
+      modal.querySelector(".js-modal-stop").removeEventListener("click", stopPropagation);
       modal = null;
     };
 
+    // Écouteur d'événement pour ouvrir la modal
     document.querySelector(".js-modal").addEventListener("click", openModal);
+
+    // Fonction pour afficher les projets dans la modal 
+    function projetsModal() {
+      const createBaliseDiv = document.createElement("div");
+      createBaliseDiv.classList = "divModalImg";
+      document.querySelector(".modal-wrapper").appendChild(createBaliseDiv);
+
+      Projets.map((projet) => {
+        // Création d'un conteneur pour chaque image et son logo trash
+        const imageContainer = document.createElement("div");
+        imageContainer.classList.add("image-container");
+
+        // Création de l'image
+        const createBaliseImg = document.createElement("img");
+        createBaliseImg.src = projet.imageUrl;
+        createBaliseImg.alt = projet.title;
+        createBaliseImg.classList = "imageModal";
+        imageContainer.appendChild(createBaliseImg);
+
+        // Création du logo trash
+        const createBaliseLogo = document.createElement("i");
+        createBaliseLogo.classList = "fa-solid fa-trash-can trash-icon";
+        createBaliseLogo.style = "color: #FFFFFF;";
+        imageContainer.appendChild(createBaliseLogo);
+
+        // Ajout du conteneur à la modal
+        document.querySelector(".divModalImg").appendChild(imageContainer);
+      });
+
+      // Création du bouton "Ajouter une photo"
+      const inputAjoutimg = document.createElement("input");
+      inputAjoutimg.type = "submit";
+      inputAjoutimg.value = "Ajouter une photo";
+      inputAjoutimg.classList = "buttonAddImg";
+      document.querySelector(".modal-wrapper").appendChild(inputAjoutimg);
+    }
+
+    projetsModal();
+    //Ferme la modal en appuyant sur Echap 
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" || e.key === "Esc") {
+        closeModal(e);
+      }
+    });
   } catch (error) {
     console.error(`Erreur: ${error}`);
     return [];
   }
 }
+
 // fonction pour bouton filtres
 function CreationBoutonTri() {
   try {
@@ -139,6 +192,9 @@ function login() {
     return [];
   }
 }
+
+
+
 
 login();
 affichageProjets(Projets);

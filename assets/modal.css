@@ -26,6 +26,7 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
+    text-align: center;
 }
 
 #titlemodal {
@@ -42,3 +43,44 @@
     display: flex;
     justify-content: flex-end;
 }
+
+
+.divModalImg {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 50px;
+    border-bottom: 1px rgba(179, 179, 179, 1) solid;
+    margin: 30px 30px 0px 30px;
+    
+}
+
+.imageModal {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.buttonAddImg {
+    margin : 30px 0px 10px 0px;
+    padding : 8px 0px 8px 0px;
+    width: 40%;
+}
+
+.fa-solid.fa-trash-can {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.image-container {
+    position: relative;
+    width: 18%;
+  }
+  
+  .trash-icon {
+    position: absolute;
+    top: 14px;
+    right: 5px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 2px;
+  }
+  

@@ -18,8 +18,8 @@ formulaireConnect.addEventListener("submit", async (event) => {
       window.location.href = "index.html";
     } else {
       console.error("Erreur le token n'est pas stocké");
-      const erreurID = document.querySelector(".ErreurIDnone");
-      erreurID.classList = "ErreurID";
+      const erreurID = document.querySelector(".errorIdNone");
+      erreurID.classList = "errorId";
     }
   } catch (error) {
     console.error("Erreur :", error);

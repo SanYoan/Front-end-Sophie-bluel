@@ -3,6 +3,8 @@
 	font-size: 14px;
 	font-family: Syne;
 	height: 36px;
+	margin: 2em auto;
+	width: 180px;
 }
 
 .MdpForget {
@@ -46,12 +48,13 @@ footer {
 	padding: 20px 0;
 }
 
-.ErreurIDnone {
+.errorIdNone {
 	display: none;
 }
 
-.ErreurID {
+.errorId {
 	padding-top: 10px;
 	color: #FF0000;
 	text-decoration: underline;
 }
+

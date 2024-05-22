@@ -1,10 +1,33 @@
+async function fetchProjets() {
+  try {
+    const response = await fetch("http://localhost:5678/api/works");
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des projets');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Erreur lors de la récupération des projets: ${error.message}`);
+    return []; // Retourne un tableau vide en cas d'erreur
+  }
+}
+
+async function fetchCategories() {
+  try {
+    const response = await fetch("http://localhost:5678/api/categories");
+    if (!response.ok) {
+      throw new Error('Erreur lors de la récupération des catégories');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`Erreur lors de la récupération des catégories: ${error.message}`);
+    return []; // Retourne un tableau vide en cas d'erreur
+  }
+}
+
 // Récupération des données sur l'API et transformation des données en JSON
-const Projets = await fetch("http://localhost:5678/api/works").then((Projets) =>
-  Projets.json()
-);
-const categories = await fetch("http://localhost:5678/api/categories").then(
-  (categories) => categories.json()
-);
+const Projets = await fetchProjets();
+const categories = await fetchCategories();
+
 // Récupération du token
 const token = window.localStorage.getItem("token");
 // Modale
@@ -30,6 +53,7 @@ function affichageProjets(Projets) {
     console.error(`Erreur: ${error}`);
   }
 }
+
 // Fonction pour créer les boutons de tri
 function CreationBoutonTri() {
   try {
@@ -63,6 +87,7 @@ function CreationBoutonTri() {
     console.error(`Erreur: ${error}`);
   }
 }
+
 // Fonction de connexion
 function logout() {
   try {
@@ -95,63 +120,64 @@ function logout() {
 
 // Fonction pour créer la modale
 function Modal() {
-  try {
-    // Fermer la modale avec la touche Escape
-    window.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" || e.key === "Esc") {
-        closeModal(e);
-      }
-    });
-
-    projetsModal();
-    document.querySelectorAll(".js-modal").forEach((btn) => {
-      btn.addEventListener("click", openModal);
-    });
-    // Fonction pour arrêter la propagation de l'événement
-    function stopPropagation(e) {
-      e.stopPropagation();
+  // Fermer la modale avec la touche Escape
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" || e.key === "Esc") {
+      closeModal(e);
     }
+  });
 
-    // Fonction pour ouvrir la modale
-    function openModal(e) {
-      e.preventDefault();
-      modal = document.querySelector(e.target.getAttribute("href"));
-      modal.style.display = null;
-      modal.removeAttribute("aria-hidden");
-      modal.setAttribute("aria-modal", "true");
+  projetsModal();
+  document.querySelectorAll(".js-modal").forEach((btn) => {
+    btn.addEventListener("click", openModal);
+  });
+  // Fonction pour arrêter la propagation de l'événement
+  function stopPropagation(e) {
+    e.stopPropagation();
+  }
 
-      // Enlève aria-hidden sur les balises "i"
-      modal
-        .querySelectorAll("i")
-        .forEach((icon) => icon.removeAttribute("aria-hidden"));
+  // Fonction pour ouvrir la modale
+  function openModal(e) {
+    e.preventDefault();
+    modal = document.querySelector(e.target.getAttribute("href"));
+    modal.style.display = null;
+    modal.removeAttribute("aria-hidden");
+    modal.setAttribute("aria-modal", "true");
 
-      modal.addEventListener("click", closeModal);
-      modal
-        .querySelector(".fa-solid.fa-xmark")
-        .addEventListener("click", closeModal);
-      modal
-        .querySelector(".js-modal-stop")
-        .addEventListener("click", stopPropagation);
-    }
-    // Fonction pour fermer la modale
-    function closeModal(e) {
-      if (modal === null) return;
-      e.preventDefault();
-      window.setTimeout(function () {
-        modal.style.display = "none";
-      }, 500);
-      modal.setAttribute("aria-hidden", "true");
-      modal.removeAttribute("aria-modal");
-      modal.removeEventListener("click", closeModal);
-      modal
-        .querySelector(".fa-solid.fa-xmark")
-        .removeEventListener("click", closeModal);
-      modal
-        .querySelector(".js-modal-stop")
-        .removeEventListener("click", stopPropagation);
-    }
-    // Fonction pour afficher les projets dans la modale
-    function projetsModal() {
+    // Enlève aria-hidden sur les balises "i"
+    modal
+      .querySelectorAll("i")
+      .forEach((icon) => icon.removeAttribute("aria-hidden"));
+
+    modal.addEventListener("click", closeModal);
+    modal
+      .querySelector(".fa-solid.fa-xmark")
+      .addEventListener("click", closeModal);
+    modal
+      .querySelector(".js-modal-stop")
+      .addEventListener("click", stopPropagation);
+  }
+  // Fonction pour fermer la modale
+  function closeModal(e) {
+    if (modal === null) return;
+    e.preventDefault();
+    window.setTimeout(function () {
+      modal.style.display = "none";
+    }, 500);
+    modal.setAttribute("aria-hidden", "true");
+    modal.removeAttribute("aria-modal");
+    modal.removeEventListener("click", closeModal);
+    modal
+      .querySelector(".fa-solid.fa-xmark")
+      .removeEventListener("click", closeModal);
+    modal
+      .querySelector(".js-modal-stop")
+      .removeEventListener("click", stopPropagation);
+  }
+  // Fonction pour afficher les projets dans la modale
+  // Fonction pour afficher les projets dans la modale
+  async function projetsModal() {
+    try {
       // Création de l'icône X
       const iconModal = document.createElement("i");
       iconModal.classList = "fa-solid fa-xmark";
@@ -167,6 +193,9 @@ function Modal() {
       const createBaliseDiv = document.createElement("div");
       createBaliseDiv.classList = "divModalImg";
       document.querySelector(".modal-wrapper").appendChild(createBaliseDiv);
+
+      // Récupération des projets depuis l'API
+      const Projets = await fetchProjets();
 
       // Ajout des images dans la div
       Projets.map((projet) => {
@@ -186,7 +215,6 @@ function Modal() {
         document.querySelector(".divModalImg").appendChild(imageContainer);
         createElementTrash.addEventListener("click", () => {
           // Suppression de l'élément parent (imageContainer)
-
           fetch(`http://localhost:5678/api/works/${projet.id}`, {
             method: "DELETE",
             headers: {
@@ -206,14 +234,13 @@ function Modal() {
                       "Erreur lors de la récupération des projets:",
                       error
                     )
-                  );
-              } else {
-                console.error("Erreur lors de la suppression du projet");
+                  )
               }
             })
             .catch((error) => console.error("Erreur:", error));
         });
       });
+
       // Bouton pour ajouter une image
       const inputAjoutimg = document.createElement("input");
       inputAjoutimg.type = "submit";
@@ -223,109 +250,75 @@ function Modal() {
       inputAjoutimg.addEventListener("click", () => {
         addModal();
       });
+    } catch (error) {
+      console.error(`Erreur: ${error}`);
     }
-    // Fonction pour ajouter une photo dans le formulaire
-    function addModal() {
-      // Création du formulaire HTML
-      const formHtml = `
+  }
+
+  // Fonction pour ajouter une photo dans le formulaire
+  function addModal() {
+    // Création du formulaire HTML
+    const formHtml = `
     <div class="returnExit">
-      <i class="fa-solid fa-arrow-left"></i>
-      <i class="fa-solid fa-xmark"></i>
+    <i class="fa-solid fa-arrow-left"></i>
+    <i class="fa-solid fa-xmark"></i>
     </div>
     <form action="/upload" method="post" id="form-modal">
-      <h1 id ="titlemodal">Ajout photo</h1>
-      <label for="add-image" class="label-add">
-        <img src="" alt="image upload" class="img-preview">
-        <span class="icon-image"><i class="fa-solid fa-image"></i></span>
-        <label for="add-image" class="label-add-image">+ Ajouter photo</label>
-        <input type="file" name="add-image" id="add-image" />
-        <span class="text-image">jpg, png : 4mo max</span>
-      </label>
-      <div class="divInput">
-        <label for="input-title">Titre</label>
-        <input type="text" id="input-title" placeholder="Entrer un titre ...">
-        <label for="selectCategory">Catégories</label>
-        <select name="selectCategory" id="selectCategory">
-          <option value=""disabled selected>Sélectionner la catégorie ...</option>
-        </select>
-        <hr class="barSeparator">
-        <input type="submit" value="Valider" class="buttonAddImg">
-      </div>
+    <h1 id ="titlemodal">Ajout photo</h1>
+    <label for="add-image" class="label-add">
+    <img src="" alt="image upload" class="img-preview">
+    <span class="icon-image"><i class="fa-solid fa-image"></i></span>
+    <label for="add-image" class="label-add-image">+ Ajouter photo</label>
+    <input type="file" name="add-image" id="add-image" />
+    <span class="text-image">jpg, png : 4mo max</span>
+    </label>
+    <div class="divInput">
+    <label for="input-title">Titre</label>
+    <input type="text" id="input-title" placeholder="Entrer un titre ...">
+    <label for="selectCategory">Catégories</label>
+    <select name="selectCategory" id="selectCategory">
+    <option value=""disabled selected>Sélectionner la catégorie ...</option>
+    </select>
+    <hr class="barSeparator">
+    <input type="submit" value="Valider" class="buttonAddImg">
+    </div>
     </form>
-  `;
+    `;
 
-      // Remplacer le contenu de la modale par le formulaire HTML
-      document.querySelector(".modal-wrapper").innerHTML = formHtml;
-      document
-        .querySelector(".fa-solid.fa-xmark")
-        .addEventListener("click", function (e) {
-          closeModal(e);
-        });
-      document
-        .querySelector(".fa-solid.fa-arrow-left")
-        .addEventListener("click", function (e) {
-          document.querySelector(".modal-wrapper").innerHTML = "";
-          projetsModal(e);
-          document
-            .querySelector(".fa-solid.fa-xmark")
-            .addEventListener("click", function (e) {
-              closeModal(e);
-            });
-        });
-
-      function remplirSelecteurCategories(categories) {
-        const selecteur = document.getElementById("selectCategory");
-
-        // Créez une option par catégorie et ajoutez-la au sélecteur
-        categories.map((categorie) => {
-          const option = document.createElement("option");
-          option.value = categorie.id;
-          option.textContent = categorie.name;
-          selecteur.appendChild(option);
-        });
-      }
-      remplirSelecteurCategories(categories);
-    }
-
-    // Écouter la soumission du formulaire
+    // Remplacer le contenu de la modale par le formulaire HTML
+    document.querySelector(".modal-wrapper").innerHTML = formHtml
+    remplirSelecteurCategories(categories);
     document
-      .getElementById("form-modal")
-      .addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const formData = new FormData();
-
-        // Récupérer les données du formulaire
-        const imageFile = document.getElementById("add-image").files[0];
-        const title = document.getElementById("input-title").value;
-        const category = document.getElementById("selectCategory").value;
-
-        // Ajouter les données au FormData
-        formData.append("image", imageFile);
-        formData.append("title", title);
-        formData.append("category", category);
-
-        // Envoyer les données à l'API
-        await fetch("http://localhost:5678/api/works", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then(fetch("http://localhost:5678/api/works"))
-          .then((response) => response.json())
-          .then((projects) => {
-            document.querySelector(".gallery").innerHTML = "";
-            affichageProjets(projects);
-          });
-      })
-      .catch((error) => {
-        console.error("Erreur:", error);
+      .querySelector(".fa-solid.fa-xmark")
+      .addEventListener("click", function (e) {
+        closeModal(e);
       });
-  } catch (error) {
-    console.error(`Erreur: ${error}`);
+    document
+      .querySelector(".fa-solid.fa-arrow-left")
+      .addEventListener("click", function (e) {
+        document.querySelector(".modal-wrapper").innerHTML = "";
+        projetsModal(e)
+        document
+          .querySelector(".fa-solid.fa-xmark")
+          .addEventListener("click", function (e) {
+            closeModal(e);
+          });
+      });
+
+    function remplirSelecteurCategories(categories) {
+      const selecteur = document.getElementById("selectCategory");
+
+      // Créez une option par catégorie et ajoutez-la au sélecteur
+      categories.map((categorie) => {
+        const option = document.createElement("option");
+        option.value = categorie.id;
+        option.textContent = categorie.name;
+        selecteur.appendChild(option);
+      });
+    }
   }
+
+
 }
 
 // Affichage des projets et gestion de la modale si l'utilisateur est connecté
@@ -334,3 +327,50 @@ logout();
 if (token) {
   Modal();
 }
+
+
+/** // Écouter la soumission du formulaire
+  const Getdata = document.getElementById("form-modal");
+  Getdata.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData();
+
+    // Récupérer les données du formulaire
+    const imageFile = document.getElementById("add-image").files[0];
+    const title = document.getElementById("input-title").value;
+    const category = document.getElementById("selectCategory").value;
+
+    // Ajouter les données au FormData
+    formData.append("image", imageFile);
+    formData.append("title", title);
+    formData.append("category", category);
+
+    // Envoyer les données à l'API
+    fetch("http://localhost:5678/api/works", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erreur lors de l'ajout de la photo");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Afficher les projets après l'ajout réussi
+        document.querySelector(".gallery").innerHTML = "";
+        fetch("http://localhost:5678/api/works")
+          .then((response) => response.json())
+          .then((Projets) => affichageProjets(Projets))
+          .catch((error) =>
+            console.error(
+              "Erreur lors de la récupération des projets:",
+              error
+            )
+          );
+      })
+      .catch((error) => console.error("Erreur:", error));
+  }); */

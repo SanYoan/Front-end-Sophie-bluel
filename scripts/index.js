@@ -316,6 +316,44 @@ function Modal() {
         selecteur.appendChild(option);
       });
     }
+    // Écouter la soumission du formulaire
+    document.getElementById("form-modal").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      try {
+        // Récupérer les données du formulaire
+        const imageFile = document.getElementById("add-image").files[0];
+        const title = document.getElementById("input-title").value;
+        const categoryId = document.getElementById("selectCategory").value;
+
+        // Créer un objet FormData
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        formData.append("title", title);
+        formData.append("category", categoryId);
+
+        // Envoyer les données à l'API
+        const response = await fetch("http://localhost:5678/api/works", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de l'ajout de la photo");
+        }
+
+        // Réactualiser les projets depuis l'API après l'ajout réussi
+        const updatedProjects = await fetchProjets();
+        document.querySelector(".gallery").innerHTML = "";
+        affichageProjets(updatedProjects);
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de la photo:", error);
+      }
+    });
+
   }
 
 
@@ -327,50 +365,3 @@ logout();
 if (token) {
   Modal();
 }
-
-
-/** // Écouter la soumission du formulaire
-  const Getdata = document.getElementById("form-modal");
-  Getdata.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const formData = new FormData();
-
-    // Récupérer les données du formulaire
-    const imageFile = document.getElementById("add-image").files[0];
-    const title = document.getElementById("input-title").value;
-    const category = document.getElementById("selectCategory").value;
-
-    // Ajouter les données au FormData
-    formData.append("image", imageFile);
-    formData.append("title", title);
-    formData.append("category", category);
-
-    // Envoyer les données à l'API
-    fetch("http://localhost:5678/api/works", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Erreur lors de l'ajout de la photo");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // Afficher les projets après l'ajout réussi
-        document.querySelector(".gallery").innerHTML = "";
-        fetch("http://localhost:5678/api/works")
-          .then((response) => response.json())
-          .then((Projets) => affichageProjets(Projets))
-          .catch((error) =>
-            console.error(
-              "Erreur lors de la récupération des projets:",
-              error
-            )
-          );
-      })
-      .catch((error) => console.error("Erreur:", error));
-  }); */

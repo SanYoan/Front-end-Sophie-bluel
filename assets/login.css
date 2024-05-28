@@ -58,3 +58,192 @@ footer {
 	text-decoration: underline;
 }
 
+.modal {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .8);
+    animation: fadeIn .3s both;
+}
+
+.modal-login {
+    width: 300px;
+    height: 200px;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    background-color: #fff;
+    border-radius: 10px;
+    animation: slideFromTop .5s both;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.7);
+    align-items: center;
+    flex-direction: column;
+    display: flex;
+}
+
+.modal[aria-hidden="true"] {
+    animation-name: fadeOut;
+}
+.modal[aria-hidden="true"] .modal-wrapper {
+    animation-name: slideToBottom;
+}
+
+.fa-solid.fa-check.logcheck {
+	position: absolute;
+	font-size: 40px;
+	color: #63E6BE;
+	top: 25%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: 1px solid gray;
+	border-radius: 100%;
+	padding: 15px;
+  }
+
+  .modalH1 {
+	position: absolute;
+	top: 50%;
+	text-decoration: underline dotted grey ;
+	
+  }
+  .espaceh1 {
+	text-decoration: underline dotted grey ;
+	display: inline-block;
+	margin-top: 18px;
+	font-size: 22px;
+	font-family:'Syne';
+	text-align: center;
+  }
+/** 
+                //Fonction pour supprimé projet modal
+          function deleteProjets() {
+            const buttonYes = document.getElementById("yes")
+            buttonYes.addEventListener("click", (Projet) => {
+
+              // Suppression de l'élément parent (imageContainer)
+              fetch(`http://localhost:5678/api/works/${projet.id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    // Création et affichage du logo check
+                    const checkIcon = document.createElement("i");
+                    checkIcon.classList = "fa-solid fa-check Modal";
+                    checkIcon.style.color = "#63E6BE";
+                    imageContainer.appendChild(checkIcon);
+                    const modalConfirm = document.getElementById("modalDelete");
+                    modalConfirm.style.display = "none";
+                    modalConfirm.setAttribute("aria-hidden", "true");
+                    // Retrait de l'image et de l'icône poubelle
+                    createBaliseImg.style.display = "none";
+                    createElementTrash.style.display = "none";
+                    setTimeout(() => {
+                      imageContainer.remove();
+                    }, 500)
+                    // Affichage des projets après la suppression réussie
+                    document.querySelector(".gallery").innerHTML = "";
+                    fetch("http://localhost:5678/api/works")
+                      .then((response) => response.json())
+                      .then((Projets) => affichageProjets(Projets))
+                      .catch((error) =>
+                        console.error(
+                          "Erreur lors de la récupération des projets:",
+                          error
+                        )
+
+                      )
+                  }
+                })
+                .catch((error) => console.error("Erreur:", error));
+            })
+          }
+
+          //Ferme la modal de confirmation
+          function closeModalConfirmOrNo() {
+            document.getElementById("no").addEventListener("click", () => {
+              const modalConfirm = document.getElementById("modalDelete");
+              modalConfirm.style.display = "none";
+              modalConfirm.setAttribute("aria-hidden", "true");
+            })
+          }
+          // affiche la modal de confirmation 
+          function openModalConfirmOrNo() {
+            const modalConfirm = document.getElementById("modalDelete");
+            modalConfirm.style.display = "flex";
+            modalConfirm.setAttribute("aria-hidden", "false");
+            window.addEventListener("keydown", function (e) {
+              if (e.key === "Escape" || e.key === "Esc") {
+                modalConfirm.style.display = "none";
+              }
+            })
+            deleteProjets()
+            closeModalConfirmOrNo()
+          }
+        });
+      });
+
+      //Barre de séparation
+      const BarSeparate = document.createElement("hr");
+      BarSeparate.classList = "barSeparate";
+      document.querySelector(".modal-wrapper").appendChild(BarSeparate);
+      // Bouton pour ajouter une image
+      const inputAjoutimg = document.createElement("input");
+      inputAjoutimg.type = "submit";
+      inputAjoutimg.value = "Ajouter une photo";
+      inputAjoutimg.classList = "buttonAddImage";
+      document.querySelector(".modal-wrapper").appendChild(inputAjoutimg);
+      inputAjoutimg.addEventListener("click", () => {
+        addModal();
+      });
+    } catch (error) {
+      console.error(`Erreur: ${error}`);
+    }
+  }
+ //Ferme la modal de confirmation
+          function closeModalConfirmOrNo() {
+            document.getElementById("no").addEventListener("click", () => {
+              const modalConfirm = document.getElementById("modalDelete");
+              modalConfirm.style.display = "none";
+              modalConfirm.setAttribute("aria-hidden", "true");
+            })
+          }
+          // affiche la modal de confirmation 
+          function openModalConfirmOrNo() {
+            const modalConfirm = document.getElementById("modalDelete");
+            modalConfirm.style.display = "flex";
+            modalConfirm.setAttribute("aria-hidden", "false");
+            window.addEventListener("keydown", function (e) {
+              if (e.key === "Escape" || e.key === "Esc") {
+                modalConfirm.style.display = "none";
+              }
+            })
+            deleteProjets()
+            closeModalConfirmOrNo()
+          }
+        });
+      });
+
+      //Barre de séparation
+      const BarSeparate = document.createElement("hr");
+      BarSeparate.classList = "barSeparate";
+      document.querySelector(".modal-wrapper").appendChild(BarSeparate);
+      // Bouton pour ajouter une image
+      const inputAjoutimg = document.createElement("input");
+      inputAjoutimg.type = "submit";
+      inputAjoutimg.value = "Ajouter une photo";
+      inputAjoutimg.classList = "buttonAddImage";
+      document.querySelector(".modal-wrapper").appendChild(inputAjoutimg);
+      inputAjoutimg.addEventListener("click", () => {
+        addModal();
+      });
+    } catch (error) {
+      console.error(`Erreur: ${error}`);
+    }
+  }

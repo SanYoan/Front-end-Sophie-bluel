@@ -93,6 +93,13 @@ function logout() {
   try {
     const logout = document.getElementById("logout");
     if (token) {
+      // Ajout d'un header pour le mode édition
+      const header = document.querySelector("header");
+      header.style.marginTop = "109px";
+      const menuEdit = document.createElement("div");
+      menuEdit.classList.add("menuEdit");
+      header.insertBefore(menuEdit, header.firstChild);
+      menuEdit.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> <p>Mode édition</p>`;
       logout.innerText = "Logout";
       const logoH2 = document.createElement("i");
       logoH2.classList = "fa-regular fa-pen-to-square";
@@ -214,38 +221,86 @@ function Modal() {
         imageContainer.appendChild(createElementTrash);
         document.querySelector(".divModalImg").appendChild(imageContainer);
         createElementTrash.addEventListener("click", () => {
-          // Suppression de l'élément parent (imageContainer)
-          fetch(`http://localhost:5678/api/works/${projet.id}`, {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-            .then((response) => {
-              if (response.ok) {
-                imageContainer.remove();
-                // Affichage des projets après la suppression réussie
-                document.querySelector(".gallery").innerHTML = "";
-                fetch("http://localhost:5678/api/works")
-                  .then((response) => response.json())
-                  .then((Projets) => affichageProjets(Projets))
-                  .catch((error) =>
-                    console.error(
-                      "Erreur lors de la récupération des projets:",
-                      error
-                    )
-                  )
+          openModalConfirmOrNo()
+          //Fonction pour supprimé projet modal
+          function deleteProjets() {
+            const buttonYes = document.getElementById("yes")
+            buttonYes.addEventListener("click", (Projet) => {
+
+              // Suppression de l'élément parent (imageContainer)
+              fetch(`http://localhost:5678/api/works/${projet.id}`, {
+                method: "DELETE",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    // Création et affichage du logo check
+                    const checkIcon = document.createElement("i");
+                    checkIcon.classList = "fa-solid fa-check Modal";
+                    checkIcon.style.color = "#63E6BE";
+                    imageContainer.appendChild(checkIcon);
+                    const modalConfirm = document.getElementById("modalDelete");
+                    modalConfirm.style.display = "none";
+                    modalConfirm.setAttribute("aria-hidden", "true");
+                    // Retrait de l'image et de l'icône poubelle
+                    createBaliseImg.style.display = "none";
+                    createElementTrash.style.display = "none";
+                    setTimeout(() => {
+                      imageContainer.remove();
+                    }, 500)
+                    // Affichage des projets après la suppression réussie
+                    document.querySelector(".gallery").innerHTML = "";
+                    fetch("http://localhost:5678/api/works")
+                      .then((response) => response.json())
+                      .then((Projets) => affichageProjets(Projets))
+                      .catch((error) =>
+                        console.error(
+                          "Erreur lors de la récupération des projets:",
+                          error
+                        )
+
+                      )
+                  }
+                })
+                .catch((error) => console.error("Erreur:", error));
+            })
+          }
+
+          //Ferme la modal de confirmation
+          function closeModalConfirmOrNo() {
+            document.getElementById("no").addEventListener("click", () => {
+              const modalConfirm = document.getElementById("modalDelete");
+              modalConfirm.style.display = "none";
+              modalConfirm.setAttribute("aria-hidden", "true");
+            })
+          }
+          // affiche la modal de confirmation 
+          function openModalConfirmOrNo() {
+            const modalConfirm = document.getElementById("modalDelete");
+            modalConfirm.style.display = "flex";
+            modalConfirm.setAttribute("aria-hidden", "false");
+            window.addEventListener("keydown", function (e) {
+              if (e.key === "Escape" || e.key === "Esc") {
+                modalConfirm.style.display = "none";
               }
             })
-            .catch((error) => console.error("Erreur:", error));
+            deleteProjets()
+            closeModalConfirmOrNo()
+          }
         });
       });
 
+      //Barre de séparation
+      const BarSeparate = document.createElement("hr");
+      BarSeparate.classList = "barSeparate";
+      document.querySelector(".modal-wrapper").appendChild(BarSeparate);
       // Bouton pour ajouter une image
       const inputAjoutimg = document.createElement("input");
       inputAjoutimg.type = "submit";
       inputAjoutimg.value = "Ajouter une photo";
-      inputAjoutimg.classList = "buttonAddImg";
+      inputAjoutimg.classList = "buttonAddImage";
       document.querySelector(".modal-wrapper").appendChild(inputAjoutimg);
       inputAjoutimg.addEventListener("click", () => {
         addModal();
@@ -254,6 +309,7 @@ function Modal() {
       console.error(`Erreur: ${error}`);
     }
   }
+
 
   // Fonction pour ajouter une photo dans le formulaire
   function addModal() {
@@ -264,7 +320,7 @@ function Modal() {
     <i class="fa-solid fa-xmark"></i>
     </div>
     <form action="/upload" method="post" id="form-modal">
-    <h1 id ="titlemodal">Ajout photo</h1>
+    <h1 id ="titleModal">Ajout photo</h1>
     <label for="add-image" class="label-add">
     <img src="" alt="image upload" class="img-preview">
     <span class="icon-image"><i class="fa-solid fa-image"></i></span>
@@ -304,7 +360,45 @@ function Modal() {
             closeModal(e);
           });
       });
+    function getNewImage() {
+      const addImage = document.getElementById("add-image");
+      addImage.addEventListener("change", () => {
+        const image = addImage.files[0];
+        // Vérification du type de fichier : image/jpeg ou image/png
+        if (image.type === "image/jpeg" || image.type === "image/png") {
+          // Vérification de la taille de l'image : 4mo max
+          if (image && image.size <= 4000000) {
+            // Création d'un objet FileReader pour lire le contenu du fichier
+            const fileReader = new FileReader();
+            // Lorsque la lecture est terminée, l'URL de l'image est chargée
+            fileReader.onload = () => {
+              const imgPreview = document.querySelector(".img-preview");
+              const iconImage = document.querySelector(".icon-image");
+              const labelAddImage = document.querySelector(".label-add-image");
+              const textImage = document.querySelector(".text-image");
+              iconImage.style.display = "none";
+              addImage.style.display = "none";
+              labelAddImage.style.display = "none";
+              textImage.style.display = "none";
+              imgPreview.src = fileReader.result;
+              imgPreview.style.display = "flex";
+              const crossImage = document.createElement("i");
+              crossImage.classList = "fa-solid fa-xmark image";
+              crossImage.style.display = "block"
 
+              const divInput = document.querySelector(".divInput")
+              divInput.insertBefore(crossImage, divInput.firstChild);
+              crossImage.addEventListener("click", () => {
+                addModal();
+              })
+            };
+            // Lecture de l'URl de l'image
+            fileReader.readAsDataURL(image);
+          }
+
+        }
+      });
+    }
     function remplirSelecteurCategories(categories) {
       const selecteur = document.getElementById("selectCategory");
 
@@ -316,6 +410,7 @@ function Modal() {
         selecteur.appendChild(option);
       });
     }
+
     // Écouter la soumission du formulaire
     document.getElementById("form-modal").addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -325,13 +420,24 @@ function Modal() {
         const imageFile = document.getElementById("add-image").files[0];
         const title = document.getElementById("input-title").value;
         const categoryId = document.getElementById("selectCategory").value;
-
+        //Permet d'affiché un message de validation 
+        function pictureValid() {
+          const textImage = document.querySelector(".text-image")
+          textImage.innerText = `Image validée : ${imageFile.name}`;
+          const logoImage = document.querySelector(".fa-solid.fa-image")
+          logoImage.classList = "fa-solid fa-check"
+          logoImage.style = "color: #63E6BE;";
+          const buttonAddPicture = document.querySelector(".label-add-image")
+          buttonAddPicture.style.display = "none"
+          setTimeout(() => {
+            addModal();
+          }, 1000);
+        }
         // Créer un objet FormData
         const formData = new FormData();
         formData.append("image", imageFile);
         formData.append("title", title);
         formData.append("category", categoryId);
-
         // Envoyer les données à l'API
         const response = await fetch("http://localhost:5678/api/works", {
           method: "POST",
@@ -349,10 +455,13 @@ function Modal() {
         const updatedProjects = await fetchProjets();
         document.querySelector(".gallery").innerHTML = "";
         affichageProjets(updatedProjects);
+        addModal();
+        pictureValid()
       } catch (error) {
         console.error("Erreur lors de l'ajout de la photo:", error);
       }
     });
+    getNewImage();
 
   }
 
@@ -364,4 +473,7 @@ affichageProjets(Projets);
 logout();
 if (token) {
   Modal();
+
+
 }
+

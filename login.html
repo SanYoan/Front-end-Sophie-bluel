@@ -12,6 +12,8 @@
   <meta name="description" content="">
   <link rel="stylesheet" href="./assets/style.css">
   <link rel="stylesheet" href="./assets/login.css">
+  <link rel="stylesheet" href="./assets/modal.css">
+  <script src="https://kit.fontawesome.com/2dcf4abebd.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -28,6 +30,12 @@
   </header>
   <main>
     <section>
+      <aside id="modal1" class="modal"  role="dialog" aria-labelledby="titlemodal" style="display: none;" aria-hidden="true">
+        <div class="modal-login js-modal-stop">
+          <i class="fa-solid fa-check logcheck"></i>
+      <h1 class="modalH1">Authentification <span class="espaceh1">réussie !</span> </h1>  
+				</div>
+			</aside>
       <h2 class="LogIn">Log In</h2>
       <form action="#" method="post" class="FormConnect">
         <div class="ConnectText">

@@ -22,11 +22,16 @@ formulaireConnect.addEventListener("submit", async (event) => {
     const token = data.token; // Extraction du token à partir des données
 
     // Vérification de la réponse de la requête
-    if (response.status < 400) { // Si la requête a réussi (statut < 400)
+    if (response.status < 400) {
+      // Si la requête a réussi (statut < 400)
+      authentificationSuccessful();
       window.localStorage.setItem("token", token); // Stockage du token dans le localStorage
       console.log("Le token a été sauvegardé");
-      window.location.href = "index.html"; // Redirection vers la page d'accueil
-    } else { // Si la requête a échoué
+      setTimeout(() => {
+        window.location.href = "index.html"; // Redirection vers la page d'accueil après 2 secondes
+      }, 2000);
+    } else {
+      // Si la requête a échoué
       console.error("Erreur le token n'est pas stocké");
       const erreurID = document.querySelector(".errorIdNone");
       erreurID.classList = "errorId"; // Affichage de l'erreur sur l'interface utilisateur
@@ -35,3 +40,9 @@ formulaireConnect.addEventListener("submit", async (event) => {
     console.error("Erreur :", error); // Gestion des erreurs
   }
 });
+
+function authentificationSuccessful() {
+  const modalLogin = document.getElementById("modal1");
+  modalLogin.style.display = "flex";
+  modalLogin.setAttribute("aria-hidden", "false");
+}

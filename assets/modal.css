@@ -21,7 +21,7 @@
 
 .modal-wrapper {
     width: 630px;
-    height: 688px;
+    height: 670px;
     max-width: calc(100vw - 20px);
     max-height: calc(100vh - 20px);
     background-color: #fff;
@@ -31,6 +31,7 @@
     align-items: center;
     flex-direction: column;
     display: flex;
+    overflow: auto;
 }
 
 .modal[aria-hidden="true"] {
@@ -88,7 +89,7 @@
 }
 
 .buttonAddImage {
-    margin : 30px 0px 10px 0px;
+    margin : 30px 0px 20px 0px;
     padding : 8px 0px 8px 0px;
     width: 40%;
 }
@@ -126,7 +127,7 @@
     height: 100%;
     text-align: center;
     padding: 0 62px;
-    overflow: auto;
+ 
   }
   
   
@@ -140,7 +141,7 @@
     gap: 6px;
     background-color: #e8f1f6;
     border-radius: 5px;
-    margin-top: 50px;
+    margin-top: 30px;
   }
   
   .label-add .img-preview {
@@ -204,7 +205,7 @@
 }
 .divInput .barSeparator {
   border: solid 1px rgba(179, 179, 179, 1);
-  margin: 72px 0 30px 0;
+  margin: 40px 0 36px 0;
   width: 100%;
 }
 .barSeparate {
@@ -226,6 +227,12 @@
   display: flex;
   justify-content: space-evenly;
   gap: 20px;
+}
+.errorPicture {
+margin-top:  30px;
+color: brown;
+font-size: 16px;
+font-family: 'Syne';
 }
 .modalH2 {
   text-align: center;

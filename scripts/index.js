@@ -370,8 +370,8 @@ function Modal() {
         const image = addImage.files[0];
         // Vérification du type de fichier : image/jpeg ou image/png
         if (image.type === "image/jpg" || image.type === "image/png") {
-          // Vérification de la taille de l'image : 4mo max
-          if (image && image.size <= 4000000) {
+          if (image.size <= 4000000) {
+            // Vérification de la taille de l'image : 4mo max
             // Création d'un objet FileReader pour lire le contenu du fichier
             const fileReader = new FileReader();
             // Lorsque la lecture est terminée, l'URL de l'image est chargée
@@ -402,10 +402,13 @@ function Modal() {
             errorMessage.innerText = "Attention : Votre image dépasse les 4 Mo"
             const hrElement = document.querySelector(".divInput");
             hrElement.parentNode.insertBefore(errorMessage, hrElement);
+            const addImageInput = document.getElementById("add-image");
+            addImageInput.value = "";
           }
         }
       });
     }
+    getNewImage();
     function remplirSelecteurCategories(categories) {
       const selecteur = document.getElementById("selectCategory");
 
@@ -429,8 +432,6 @@ function Modal() {
       });
     }
     // Écouter la soumission du formulaire
-
-
     document
       .getElementById("form-modal")
       .addEventListener("submit", async function (e) {
@@ -441,7 +442,6 @@ function Modal() {
           const imageFile = document.getElementById("add-image").files[0];
           const title = document.getElementById("input-title").value;
           const categoryId = document.getElementById("selectCategory").value;
-
           //Permet d'affiché un message de validation
           function pictureValid() {
             const textImage = document.querySelector(".text-image");
@@ -542,7 +542,7 @@ function Modal() {
           console.error("Erreur lors de l'ajout de la photo:", error);
         }
       });
-    getNewImage();
+
   }
 }
 

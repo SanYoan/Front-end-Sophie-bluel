@@ -31,6 +31,7 @@ async function fetchCategories() {
 
 const Projets = await fetchProjets();
 const categories = await fetchCategories();
+
 // Récupération du token
 const token = window.localStorage.getItem("token");
 //Déclaration de la Modale à Null
@@ -116,7 +117,7 @@ function createEditModeAndLink() {
   titleH2.appendChild(modalText);
 }
 // Fonction pour gérer la déconnexion et l'affichage des fonctionnalités
-function handleUserAuthentication() {
+function handleUserAuthentification() {
   try {
     const logoutButton = document.getElementById("logout");
     if (token) {
@@ -124,7 +125,7 @@ function handleUserAuthentication() {
       logoutButton.innerText = "Logout";
       logoutButton.addEventListener("click", () => {
         window.localStorage.removeItem("token");
-        location.href = "index.html";
+        logoutButton.href = "index.html";
       });
     } else {
       createFilterButtons(categories, []);
@@ -186,7 +187,7 @@ function initModal() {
       .querySelector(".js-modal-stop")
       .removeEventListener("click", stopPropagation);
   }
-  // Fonction pour afficher les projets dans la modale
+  // Fonction pour crée la modale et afficher les projets dans la modale
   async function projetsModal() {
     try {
       // Création de l'icône X
@@ -239,9 +240,7 @@ function initModal() {
                 checkIcon.classList = "fa-solid fa-check Modal";
                 checkIcon.style.color = "#63E6BE";
                 imageContainer.appendChild(checkIcon);
-                const modalConfirm = document.getElementById("modalOpen");
-                modalConfirm.style.display = "none";
-                modalConfirm.setAttribute("aria-hidden", "true");
+
                 // Retrait de l'image et de l'icône poubelle
                 createBaliseImg.style.display = "none";
                 createElementTrash.style.display = "none";
@@ -321,7 +320,7 @@ function initModal() {
 
     // Remplacer le contenu de la modale par le formulaire HTML
     document.querySelector(".modal-wrapper").innerHTML = formHtml;
-    remplirSelecteurCategories(categories);
+    fillCategorySelector(categories);
     document
       .querySelector(".fa-solid.fa-xmark")
       .addEventListener("click", function (e) {
@@ -346,6 +345,7 @@ function initModal() {
         // Vérification du type de fichier : image/jpeg ou image/png
         if (image.type === "image/jpg" || image.type === "image/png") {
           if (image.size <= 4000000) {
+            errorMessage.innerText = ""
             // Vérification de la taille de l'image : 4mo max
             // Création d'un objet FileReader pour lire le contenu du fichier
             const fileReader = new FileReader();
@@ -385,7 +385,7 @@ function initModal() {
     }
     getNewImage();
 
-    function remplirSelecteurCategories(categories) {
+    function fillCategorySelector(categories) {
       const selecteur = document.getElementById("selectCategory");
 
       // Créez une option par catégorie et ajoutez-la au sélecteur
@@ -453,19 +453,15 @@ function initModal() {
                 Authorization: `Bearer ${token}`,
               },
               body: formData,
-            });
+            })
 
-            // Masquer la modale de confirmation
-            const modalConfirm = document.getElementById("modalOpenAdd");
-            modalConfirm.style.display = "none";
-            modalConfirm.setAttribute("aria-hidden", "true");
 
             // Réactualiser les projets depuis l'API après l'ajout réussi
             const updatedProjects = await fetchProjets();
             document.querySelector(".gallery").innerHTML = "";
             displayProjects(updatedProjects);
             // Afficher une confirmation de validation de l'image
-            addModal();
+            addModal()
             //Permet d'affiché un message de validation
             const textImage = document.querySelector(".text-image");
             textImage.innerText = `Image validée : ${imageFile.name}`;
@@ -487,7 +483,7 @@ function initModal() {
 
 // Affichage des projets et gestion de la modale si l'utilisateur est connecté
 displayProjects(Projets);
-handleUserAuthentication();
+handleUserAuthentification();
 if (token) {
   // Appel à la fonction initModal après sa définition
   initModal();

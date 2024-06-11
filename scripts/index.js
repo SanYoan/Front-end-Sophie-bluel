@@ -61,30 +61,32 @@ function displayProjects(Projets) {
   }
 }
 // Fonction pour créer les boutons de tri
+function filterButtons(type, value, id, classList) {
+  const baliseInput = document.createElement("input")
+  baliseInput.type = type
+  baliseInput.value = value
+  baliseInput.classList = classList
+  baliseInput.id = id
+  return baliseInput
+}
+// Fonction pour créer les boutons de tri et les ajoutés au Doms
 function createFilterButtons() {
   try {
     const divPortfolio = document.querySelector(".DivFiltres");
-    const BaliseInputTous = document.createElement("input");
-    BaliseInputTous.type = "button";
-    BaliseInputTous.value = "Tous";
-    BaliseInputTous.classList = "btnFiltres";
-    BaliseInputTous.addEventListener("click", () => {
+    const baliseInputTous = filterButtons("button", "Tous", "0", "btnFiltres")
+    baliseInputTous.addEventListener("click", () => {
       document.querySelector(".gallery").innerHTML = "";
       displayProjects(Projets);
     });
-    divPortfolio.appendChild(BaliseInputTous);
+    divPortfolio.appendChild(baliseInputTous);
 
     categories.map((category) => {
-      const BalisesInput = document.createElement("input");
-      BalisesInput.type = "button";
-      BalisesInput.value = category.name;
-      BalisesInput.id = category.id;
-      BalisesInput.classList = "btnFiltres";
-      divPortfolio.appendChild(BalisesInput);
-      BalisesInput.addEventListener("click", () => {
+      const balisesInput = filterButtons("button", category.name, category.id, "btnFiltres")
+      divPortfolio.appendChild(balisesInput);
+      balisesInput.addEventListener("click", () => {
         document.querySelector(".gallery").innerHTML = "";
         const ProjetsFiltrees = Projets.filter(
-          (projet) => parseInt(projet.category.id) === parseInt(BalisesInput.id)
+          (projet) => parseInt(projet.category.id) === parseInt(balisesInput.id)
         );
         displayProjects(ProjetsFiltrees);
       });

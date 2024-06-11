@@ -145,10 +145,6 @@ function initModal() {
       closeModal(e);
     }
   });
-  // Fonction pour arrêter la propagation de l'événement
-  function stopPropagation(e) {
-    e.stopPropagation();
-  }
   // Fonction pour ouvrir la modale
   function openModal(e) {
     e.preventDefault();
@@ -186,6 +182,10 @@ function initModal() {
     modal
       .querySelector(".js-modal-stop")
       .removeEventListener("click", stopPropagation);
+  }
+  // Fonction pour arrêter la propagation de l'événement
+  function stopPropagation(e) {
+    e.stopPropagation();
   }
   // Fonction pour crée la modale et afficher les projets dans la modale
   async function projetsModal() {
@@ -345,7 +345,7 @@ function initModal() {
         // Vérification du type de fichier : image/jpeg ou image/png
         if (image.type === "image/jpg" || image.type === "image/png") {
           if (image.size <= 4000000) {
-            errorMessage.innerText = ""
+            errorMessage.innerText = "";
             // Vérification de la taille de l'image : 4mo max
             // Création d'un objet FileReader pour lire le contenu du fichier
             const fileReader = new FileReader();
@@ -437,7 +437,6 @@ function initModal() {
         const hrElement = document.querySelector(".barSeparator");
         hrElement.parentNode.insertBefore(errorMessage, hrElement);
         if (imageFile && title && categoryId) {
-
           // Créer un objet FormData
           const formData = new FormData();
           formData.append("image", imageFile);
@@ -453,15 +452,14 @@ function initModal() {
                 Authorization: `Bearer ${token}`,
               },
               body: formData,
-            })
-
+            });
 
             // Réactualiser les projets depuis l'API après l'ajout réussi
             const updatedProjects = await fetchProjets();
             document.querySelector(".gallery").innerHTML = "";
             displayProjects(updatedProjects);
             // Afficher une confirmation de validation de l'image
-            addModal()
+            addModal();
             //Permet d'affiché un message de validation
             const textImage = document.querySelector(".text-image");
             textImage.innerText = `Image validée : ${imageFile.name}`;
